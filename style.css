@@ -264,45 +264,77 @@ a { color: inherit; text-decoration: none; }
   .library-item .work-link { margin-left: 0; }
 }
 /* Masonry: колонки, фото не обрезаются */
+/* Одна колонка сверху вниз */
 #galleryGrid.gallery-grid {
-  display: block;                 /* сбрасывает старый grid/flex */
-  column-width: 260px;            /* сколько колонок влезет, столько и будет */
-  column-gap: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
   width: 100%;
-  max-width: 1100px;
-  margin: 32px auto 0;            /* по центру, как заголовок */
+  max-width: 760px;
+  margin: 40px auto 0;
+  column-width: auto;           /* сбрасывает masonry */
 }
 
+/* Рамка-паспарту */
 #galleryGrid .gallery-item {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  margin: 0 0 14px;
-  padding: 0;
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #0b1222;
+  margin: 0;
+  padding: 14px 14px 10px;
+  background: #0d1630;
+  border: 1px solid rgba(120, 170, 255, .45);
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 6px #070d1f,                       /* внешний отступ */
+    0 0 0 7px rgba(120, 170, 255, .2),       /* тонкая внешняя линия */
+    0 18px 40px rgba(0, 0, 0, .55);          /* тень */
   cursor: zoom-in;
-  break-inside: avoid;            /* фото не разрывается между колонками */
-  aspect-ratio: auto;             /* без принудительных пропорций */
+  text-align: center;
+  transition: box-shadow .3s ease, transform .3s ease;
 }
 
+/* Фото: одинаковая область, без обрезки */
 #galleryGrid .gallery-item img {
   display: block;
   width: 100%;
-  height: auto;                   /* сохраняет пропорции */
-  max-width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
   object-fit: contain;
-  filter: grayscale(.15);
-  transition: transform .4s ease, filter .4s ease;
-}
-
-#galleryGrid .gallery-item:hover img,
-#galleryGrid .gallery-item:focus-visible img {
-  transform: scale(1.03);
+  background: #050914;
+  border: 1px solid rgba(255, 255, 255, .08);
+  transition: none;
+  transform: none;
   filter: none;
 }
-#galleryGrid .gallery-item:focus-visible { outline: 3px solid #5aa2ff; outline-offset: 3px; }
+
+/* Подпись */
+#galleryGrid .gallery-cap {
+  display: block;
+  padding: 12px 6px 4px;
+  font-size: 15px;
+  letter-spacing: .02em;
+  color: #9fb4d9;
+}
+
+#galleryGrid .gallery-item:hover,
+#galleryGrid .gallery-item:focus-visible {
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 0 6px #070d1f,
+    0 0 0 7px rgba(120, 170, 255, .6),
+    0 24px 48px rgba(0, 0, 0, .65);
+}
+#galleryGrid .gallery-item:focus-visible { outline: 3px solid #5aa2ff; outline-offset: 10px; }
+
+@media (max-width: 600px) {
+  #galleryGrid.gallery-grid { gap: 36px; padding: 0 12px; }
+  #galleryGrid .gallery-item { padding: 10px 10px 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #galleryGrid .gallery-item { transition: none; }
+}
 
 @media (max-width: 600px) {
   #galleryGrid.gallery-grid { column-width: 150px; column-gap: 10px; }
