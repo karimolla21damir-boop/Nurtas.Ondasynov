@@ -196,14 +196,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Wrap every image in a button (keyboard + screen reader friendly)
   imgs.forEach(function (img, i) {
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'gallery-item';
-    btn.setAttribute('aria-label', (img.alt || 'Сурет ' + (i + 1)) + ' – үлкейту');
-    img.parentNode.insertBefore(btn, img);
-    btn.appendChild(img);
-    btn.addEventListener('click', function () { open(i, btn); });
-  });
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'gallery-item';
+  btn.setAttribute('aria-label', (img.alt || 'Сурет ' + (i + 1)) + ' – үлкейту');
+  img.parentNode.insertBefore(btn, img);
+  btn.appendChild(img);
+
+  if (img.alt) {
+    var cap = document.createElement('span');
+    cap.className = 'gallery-cap';
+    cap.textContent = img.alt;
+    btn.appendChild(cap);
+  }
+  btn.addEventListener('click', function () { open(i, btn); });
+});
 
   // Build lightbox
   var lb = document.createElement('div');
