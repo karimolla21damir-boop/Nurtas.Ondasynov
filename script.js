@@ -186,6 +186,85 @@ document.addEventListener("DOMContentLoaded", () => {
   chips.forEach(chip => chip.addEventListener("click", () => {
     handleQuestion(chip.textContent);
   }));
+   <script>
+(function () {
+  var grid = document.getElementById('galleryGrid');
+  if (!grid) return;
+
+  var imgs = Array.prototype.slice.call(grid.querySelectorAll('img'));
+  var current = 0, lastFocus = null;
+
+  // Wrap every image in a button (keyboard + screen reader friendly)
+  imgs.forEach(function (img, i) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gallery-item';
+    btn.setAttribute('aria-label', (img.alt || 'Сурет ' + (i + 1)) + ' – үлкейту');
+    img.parentNode.insertBefore(btn, img);
+    btn.appendChild(img);
+    btn.addEventListener('click', function () { open(i, btn); });
+  });
+
+  // Build lightbox
+  var lb = document.createElement('div');
+  lb.className = 'lb';
+  lb.setAttribute('role', 'dialog');
+  lb.setAttribute('aria-modal', 'true');
+  lb.setAttribute('aria-label', 'Галерея');
+  lb.innerHTML =
+    '<button class="lb-close" aria-label="Жабу">&times;</button>' +
+    '<button class="lb-prev" aria-label="Алдыңғы">&#8249;</button>' +
+    '<figure class="lb-figure"><img class="lb-img" alt="">' +
+    '<figcaption class="lb-count"></figcaption></figure>' +
+    '<button class="lb-next" aria-label="Келесі">&#8250;</button>';
+  document.body.appendChild(lb);
+
+  var lbImg = lb.querySelector('.lb-img');
+  var lbCount = lb.querySelector('.lb-count');
+
+  function show(i) {
+    current = (i + imgs.length) % imgs.length;
+    lbImg.src = imgs[current].currentSrc || imgs[current].src;
+    lbImg.alt = imgs[current].alt;
+    lbCount.textContent = (imgs[current].alt ? imgs[current].alt + ' · ' : '') +
+      (current + 1) + ' / ' + imgs.length;
+  }
+  function open(i, trigger) {
+    lastFocus = trigger;
+    show(i);
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    lb.querySelector('.lb-close').focus();
+  }
+  function close() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    if (lastFocus) lastFocus.focus();
+  }
+
+  lb.querySelector('.lb-close').addEventListener('click', close);
+  lb.querySelector('.lb-prev').addEventListener('click', function () { show(current - 1); });
+  lb.querySelector('.lb-next').addEventListener('click', function () { show(current + 1); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+
+  // Swipe on phones
+  var startX = null;
+  lb.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  lb.addEventListener('touchend', function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
+    startX = null;
+  });
+})();
+</script>
 
   /* ---------- 6. Жыл автоматты түрде футерде ---------- */
   // (қазірше статикалық, қажет болса өзгертуге болады)
