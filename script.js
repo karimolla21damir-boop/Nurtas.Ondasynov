@@ -56,14 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll(".gallery-item").forEach(item => {
     item.addEventListener("click", () => {
-      const ph = item.querySelector(".gallery-ph");
       const img = item.querySelector("img");
+      const cap = item.querySelector("figcaption");
       if (img) {
-        lightboxContent.innerHTML = `<img src="${img.src}" alt="" style="max-width:88vw;max-height:84vh;border-radius:12px" />`;
-      } else if (ph) {
-        lightboxContent.innerHTML = `<div>${ph.firstChild.textContent}</div><span>${ph.querySelector("span").textContent}</span>`;
+        lightboxContent.innerHTML =
+          `<img src="${img.src}" alt="" />` +
+          (cap ? `<span>${cap.textContent}</span>` : "");
+        lightbox.classList.add("open");
       }
-      lightbox.classList.add("open");
     });
   });
   const closeLb = () => lightbox.classList.remove("open");
@@ -89,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatInput = document.getElementById("chatInput");
   const chips = document.querySelectorAll("#chatSuggestions .chip");
 
-  // Білім базасы: {кілт сөздер, жауап}
   const knowledge = [
     {
       keys: ["кім", "ол кім", "танысты", "жалпы", "өмірбаян", "кто"],
@@ -157,7 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function botRespond(question) {
-    // "теру" индикаторы
     const typing = document.createElement("div");
     typing.className = "chat-msg bot";
     typing.innerHTML = `<div class="chat-avatar">🤖</div>
@@ -183,96 +181,8 @@ document.addEventListener("DOMContentLoaded", () => {
     chatInput.value = "";
   });
 
-  chips.forEach(chip => chip.addEventListener("click", () => {
-    handleQuestion(chip.textContent);
+  chips.forEach(chip => chip.addEventListener("click", event => {
+    event.preventDefault();
+    handleQuestion(chip.textContent.trim());
   }));
-   <script>
-(function () {
-  var grid = document.getElementById('galleryGrid');
-  if (!grid) return;
-
-  var imgs = Array.prototype.slice.call(grid.querySelectorAll('img'));
-  var current = 0, lastFocus = null;
-
-  // Wrap every image in a button (keyboard + screen reader friendly)
-  imgs.forEach(function (img, i) {
-  var btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'gallery-item';
-  btn.setAttribute('aria-label', (img.alt || 'Сурет ' + (i + 1)) + ' – үлкейту');
-  img.parentNode.insertBefore(btn, img);
-  btn.appendChild(img);
-
-  if (img.alt) {
-    var cap = document.createElement('span');
-    cap.className = 'gallery-cap';
-    cap.textContent = img.alt;
-    btn.appendChild(cap);
-  }
-  btn.addEventListener('click', function () { open(i, btn); });
-});
-
-  // Build lightbox
-  var lb = document.createElement('div');
-  lb.className = 'lb';
-  lb.setAttribute('role', 'dialog');
-  lb.setAttribute('aria-modal', 'true');
-  lb.setAttribute('aria-label', 'Галерея');
-  lb.innerHTML =
-    '<button class="lb-close" aria-label="Жабу">&times;</button>' +
-    '<button class="lb-prev" aria-label="Алдыңғы">&#8249;</button>' +
-    '<figure class="lb-figure"><img class="lb-img" alt="">' +
-    '<figcaption class="lb-count"></figcaption></figure>' +
-    '<button class="lb-next" aria-label="Келесі">&#8250;</button>';
-  document.body.appendChild(lb);
-
-  var lbImg = lb.querySelector('.lb-img');
-  var lbCount = lb.querySelector('.lb-count');
-
-  function show(i) {
-    current = (i + imgs.length) % imgs.length;
-    lbImg.src = imgs[current].currentSrc || imgs[current].src;
-    lbImg.alt = imgs[current].alt;
-    lbCount.textContent = (imgs[current].alt ? imgs[current].alt + ' · ' : '') +
-      (current + 1) + ' / ' + imgs.length;
-  }
-  function open(i, trigger) {
-    lastFocus = trigger;
-    show(i);
-    lb.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    lb.querySelector('.lb-close').focus();
-  }
-  function close() {
-    lb.classList.remove('open');
-    document.body.style.overflow = '';
-    if (lastFocus) lastFocus.focus();
-  }
-
-  lb.querySelector('.lb-close').addEventListener('click', close);
-  lb.querySelector('.lb-prev').addEventListener('click', function () { show(current - 1); });
-  lb.querySelector('.lb-next').addEventListener('click', function () { show(current + 1); });
-  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
-
-  document.addEventListener('keydown', function (e) {
-    if (!lb.classList.contains('open')) return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') show(current - 1);
-    if (e.key === 'ArrowRight') show(current + 1);
-  });
-
-  // Swipe on phones
-  var startX = null;
-  lb.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
-  lb.addEventListener('touchend', function (e) {
-    if (startX === null) return;
-    var dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 50) show(current + (dx < 0 ? 1 : -1));
-    startX = null;
-  });
-})();
-</script>
-
-  /* ---------- 6. Жыл автоматты түрде футерде ---------- */
-  // (қазірше статикалық, қажет болса өзгертуге болады)
 });
