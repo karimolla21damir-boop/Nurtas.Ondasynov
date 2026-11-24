@@ -186,3 +186,19 @@ document.addEventListener("DOMContentLoaded", () => {
     handleQuestion(chip.textContent.trim());
   }));
 });
+imgs.forEach(function (img, i) {
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'gallery-item';
+  btn.setAttribute('aria-label', (img.alt || 'Сурет ' + (i + 1)) + ' – үлкейту');
+  img.parentNode.insertBefore(btn, img);
+  btn.appendChild(img);
+
+  if (img.alt) {
+    var cap = document.createElement('span');
+    cap.className = 'gallery-cap';
+    cap.textContent = img.alt;
+    btn.appendChild(cap);
+  }
+  btn.addEventListener('click', function () { open(i, btn); });
+});
